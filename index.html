@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>National University Attendance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #003366, #004080);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-card {
+      background: #002b55;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #ffcc00;
+      color: #003366;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .success {
+      margin-top: 15px;
+      color: #00ff99;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-card">
+    <h2>National University</h2>
+    <p>Attendance Form</p>
+
+    <input type="text" id="studentID" placeholder="Enter your student ID" required />
+
+    <select id="subject">
+      <option value="">Select Subject</option>
+      <option value="DBSM">DBSM</option>
+      <option value="CC104">CC104</option>
+      <option value="GE102">GE102</option>
+    </select>
+
+    <button onclick="submitForm()">Submit Attendance</button>
+    <div class="success" id="successMsg"></div>
+  </div>
+
+  <script>
+    const scriptURL = "PASTE_YOUR_WEB_APP_URL_HERE";
+
+    function submitForm() {
+      const studentID = document.getElementById('studentID').value;
+      const subject = document.getElementById('subject').value;
+
+      if (!studentID || !subject) {
+        alert("Please fill in your ID and subject.");
+        return;
+      }
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify({ studentID, subject }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => {
+        document.getElementById('successMsg').innerText = "Attendance submitted!";
+        document.getElementById('studentID').value = '';
+        document.getElementById('subject').value = '';
+      })
+      .catch(error => {
+        alert("Error submitting attendance.");
+        console.error(error);
+      });
+    }
+  </script>
+</body>
+</html>
