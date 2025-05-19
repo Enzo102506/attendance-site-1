@@ -1,98 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>National University Attendance</title>
+  <title>Attendance Check</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #003366, #004080);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .form-card {
-      background: #002b55;
-      padding: 30px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      font-family: Arial;
       text-align: center;
+      padding: 50px;
     }
-
-    h2 {
-      margin-bottom: 10px;
+    input, button {
+      margin: 10px;
+      padding: 10px;
     }
-
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-
-    button {
-      background-color: #ffcc00;
-      color: #003366;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .success {
-      margin-top: 15px;
-      color: #00ff99;
+    .subject-button {
+      margin: 5px;
+      padding: 10px 20px;
     }
   </style>
 </head>
 <body>
-  <div class="form-card">
-    <h2>National University</h2>
-    <p>Attendance Form</p>
-
-    <input type="text" id="studentID" placeholder="Enter your student ID" required />
-
-    <select id="subject">
-      <option value="">Select Subject</option>
-      <option value="DBSM">DBSM</option>
-      <option value="CC104">CC104</option>
-      <option value="GE102">GE102</option>
-    </select>
-
-    <button onclick="submitForm()">Submit Attendance</button>
-    <div class="success" id="successMsg"></div>
-  </div>
+  <h2>Attendance Check</h2>
+  <form id="attendanceForm">
+    <input type="text" id="studentID" placeholder="Enter Student ID" required />
+    <br>
+    <button class="subject-button" type="button" onclick="submitAttendance('Math')">Math</button>
+    <button class="subject-button" type="button" onclick="submitAttendance('Science')">Science</button>
+    <button class="subject-button" type="button" onclick="submitAttendance('English')">English</button>
+  </form>
+  <p id="message"></p>
 
   <script>
-    const scriptURL = "PASTE_YOUR_WEB_APP_URL_HERE";
-
-    function submitForm() {
-      const studentID = document.getElementById('studentID').value;
-      const subject = document.getElementById('subject').value;
-
-      if (!studentID || !subject) {
-        alert("Please fill in your ID and subject.");
+    function submitAttendance(subject) {
+      const studentID = document.getElementById("studentID").value.trim();
+      if (!studentID) {
+        alert("Please enter your Student ID.");
         return;
       }
 
-      fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify({ studentID, subject }),
-        headers: { 'Content-Type': 'application/json' }
+      fetch("PASTE_YOUR_WEB_APP_URL_HERE", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `studentID=${encodeURIComponent(studentID)}&subject=${encodeURIComponent(subject)}`
       })
-      .then(response => {
-        document.getElementById('successMsg').innerText = "Attendance submitted!";
-        document.getElementById('studentID').value = '';
-        document.getElementById('subject').value = '';
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("message").innerText = "Attendance recorded for " + subject + "!";
+        document.getElementById("attendanceForm").reset();
       })
       .catch(error => {
-        alert("Error submitting attendance.");
-        console.error(error);
+        document.getElementById("message").innerText = "Error submitting attendance.";
       });
     }
   </script>
